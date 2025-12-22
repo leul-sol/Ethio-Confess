@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
-import 'package:metsnagna/screens/auth/signin_screen.dart';
-import 'package:metsnagna/screens/vent/vent_detail_screen.dart';
+import 'package:ethioconfess/screens/auth/signin_screen.dart';
+import 'package:ethioconfess/screens/vent/vent_detail_screen.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../../models/popular_entity.dart';
 import '../../providers/biography_providers.dart';

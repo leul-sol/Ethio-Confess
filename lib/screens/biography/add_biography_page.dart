@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:metsnagna/providers/biography_providers.dart';
-// import 'package:metsnagna/services/biography_page_services.dart';
-import 'package:metsnagna/models/popular_entity.dart';
-import 'package:metsnagna/providers/user_provider.dart';
+import 'package:ethioconfess/providers/biography_providers.dart';
+// import 'package:ethioconfess/services/biography_page_services.dart';
+import 'package:ethioconfess/models/popular_entity.dart';
+import 'package:ethioconfess/providers/user_provider.dart';
 
 import '../../providers/auth_provider.dart';
 

@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// import 'package:metsnagna/models/category_model.dart';
-import 'package:metsnagna/providers/biography_providers.dart';
-import 'package:metsnagna/screens/biography/add_biography_page.dart';
-// import 'package:metsnagna/services/biography_page_services.dart';
+// import 'package:ethioconfess/models/category_model.dart';
+import 'package:ethioconfess/providers/biography_providers.dart';
+import 'package:ethioconfess/screens/biography/add_biography_page.dart';
+// import 'package:ethioconfess/services/biography_page_services.dart';
 
 import 'components/biography_list_item.dart';
 import 'components/error_screen.dart';

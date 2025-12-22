@@ -1,8 +1,8 @@
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:graphql_flutter/graphql_flutter.dart';
-// import 'package:metsnagna/models/popular_entity.dart';
-// import 'package:metsnagna/graphql/graphql_client.dart';
-// import 'package:metsnagna/utils/biography_queries.dart';
+// import 'package:ethioconfess/models/popular_entity.dart';
+// import 'package:ethioconfess/graphql/graphql_client.dart';
+// import 'package:ethioconfess/utils/biography_queries.dart';
 // import 'vent_state.dart';
 
 // final ventProvider = StateNotifierProvider<VentNotifier, VentState>(

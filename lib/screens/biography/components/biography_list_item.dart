@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:metsnagna/models/biography_entity.dart';
-import 'package:metsnagna/models/popular_entity.dart';
-// import 'package:metsnagna/providers/biography_providers.dart';
-import 'package:metsnagna/screens/biography/biography_detail_page.dart';
-import 'package:metsnagna/widgets/biography_widget/biography_like_button.dart';
-import 'package:metsnagna/utils/avatar_utils.dart';
+// import 'package:ethioconfess/models/biography_entity.dart';
+import 'package:ethioconfess/models/popular_entity.dart';
+// import 'package:ethioconfess/providers/biography_providers.dart';
+import 'package:ethioconfess/screens/biography/biography_detail_page.dart';
+import 'package:ethioconfess/widgets/biography_widget/biography_like_button.dart';
+import 'package:ethioconfess/utils/avatar_utils.dart';
 // import 'package:shimmer/shimmer.dart';
 
 class BiographyListItem extends ConsumerWidget {

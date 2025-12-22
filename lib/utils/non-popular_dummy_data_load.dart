@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:metsnagna/models/popular_entity.dart';
+import 'package:ethioconfess/models/popular_entity.dart';
 
 Future<List<PopularEntity>> loadnonPopularDummyData() async {
   final String jsonString =

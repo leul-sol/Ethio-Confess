@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:metsnagna/screens/text_detail.dart';
+import 'package:ethioconfess/screens/text_detail.dart';
 import '../utils/text_preview.dart';
 
 class ExpandableText extends StatelessWidget {

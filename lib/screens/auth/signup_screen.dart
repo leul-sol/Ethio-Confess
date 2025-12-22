@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:metsnagna/screens/auth/signin_screen.dart';
+import 'package:ethioconfess/screens/auth/signin_screen.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/auth_button.dart';
 import '../../widgets/input_text_field.dart';

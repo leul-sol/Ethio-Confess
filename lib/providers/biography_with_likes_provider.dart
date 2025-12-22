@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:metsnagna/graphql/graphql_client.dart';
-import 'package:metsnagna/models/category_enum.dart';
-import 'package:metsnagna/models/biography_entity.dart';
+import 'package:ethioconfess/graphql/graphql_client.dart';
+import 'package:ethioconfess/models/category_enum.dart';
+import 'package:ethioconfess/models/biography_entity.dart';
 import '../core/error/error_handler_service.dart';
 
 final graphQLClientProvider = Provider<Future<GraphQLClient>>((ref) {

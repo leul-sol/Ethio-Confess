@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:metsnagna/widgets/auth_wrapper.dart';
+import 'package:ethioconfess/widgets/auth_wrapper.dart';
 
 void main() {
   group('Auth Flow Integration Tests', () {

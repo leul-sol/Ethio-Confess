@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metsnagna/utils/validators.dart';
+import 'package:ethioconfess/utils/validators.dart';
 
 void main() {
   group('Validators', () {

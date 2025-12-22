@@ -1,6 +1,6 @@
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:metsnagna/providers/auth_provider.dart';
-// import 'package:metsnagna/graphql/graphql_client.dart';
+// import 'package:ethioconfess/providers/auth_provider.dart';
+// import 'package:ethioconfess/graphql/graphql_client.dart';
 // import 'package:graphql_flutter/graphql_flutter.dart';
 
 // // Central repository for tracking liked biographies
@@ -163,8 +163,8 @@
 //   return BiographyLikeCountNotifier();
 // });
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:metsnagna/providers/auth_provider.dart';
-import 'package:metsnagna/graphql/graphql_client.dart';
+import 'package:ethioconfess/providers/auth_provider.dart';
+import 'package:ethioconfess/graphql/graphql_client.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../core/error/app_error.dart';
 import '../core/error/error_handler_service.dart';

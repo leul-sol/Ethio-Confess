@@ -1,8 +1,8 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:metsnagna/providers/biography_like_provider.dart';
-// import 'package:metsnagna/providers/auth_provider.dart';
-// import 'package:metsnagna/utils/auth_utils.dart';
+// import 'package:ethioconfess/providers/biography_like_provider.dart';
+// import 'package:ethioconfess/providers/auth_provider.dart';
+// import 'package:ethioconfess/utils/auth_utils.dart';
 
 // class BiographyLikeButton extends ConsumerStatefulWidget {
 //   final String biographyId;
@@ -126,9 +126,9 @@
 // }
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:metsnagna/providers/biography_like_provider.dart';
-import 'package:metsnagna/providers/auth_provider.dart';
-import 'package:metsnagna/utils/auth_utils.dart';
+import 'package:ethioconfess/providers/biography_like_provider.dart';
+import 'package:ethioconfess/providers/auth_provider.dart';
+import 'package:ethioconfess/utils/auth_utils.dart';
 
 class BiographyLikeButton extends ConsumerStatefulWidget {
   final String biographyId;

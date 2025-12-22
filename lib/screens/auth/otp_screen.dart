@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:metsnagna/screens/auth/new_password_screen.dart';
+import 'package:ethioconfess/screens/auth/new_password_screen.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

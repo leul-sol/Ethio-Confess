@@ -1,7 +1,7 @@
 // // import 'package:graphql_flutter/graphql_flutter.dart';
-// // import 'package:metsnagna/models/popular_entity.dart';
-// // import 'package:metsnagna/services/biography_service.dart';
-// // import 'package:metsnagna/utils/biography_queries.dart';
+// // import 'package:ethioconfess/models/popular_entity.dart';
+// // import 'package:ethioconfess/services/biography_service.dart';
+// // import 'package:ethioconfess/utils/biography_queries.dart';
 
 // // enum Category { Family, Relationship, Health }
 
@@ -167,8 +167,8 @@
 // // }
 
 // import 'package:graphql_flutter/graphql_flutter.dart';
-// import 'package:metsnagna/models/popular_entity.dart';
-// import 'package:metsnagna/utils/biography_queries.dart';
+// import 'package:ethioconfess/models/popular_entity.dart';
+// import 'package:ethioconfess/utils/biography_queries.dart';
 
 // enum Category { Family, Relationship, Health }
 
@@ -356,9 +356,9 @@
 //   }
 // }
 import 'package:graphql_flutter/graphql_flutter.dart';
-// import 'package:metsnagna/models/category_model.dart';
-import 'package:metsnagna/models/popular_entity.dart';
-import 'package:metsnagna/utils/biography_queries.dart';
+// import 'package:ethioconfess/models/category_model.dart';
+import 'package:ethioconfess/models/popular_entity.dart';
+import 'package:ethioconfess/utils/biography_queries.dart';
 import '../core/error/error_handler_service.dart';
 import '../core/error/app_error.dart';
 import 'dart:developer' as developer;

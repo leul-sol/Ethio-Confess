@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metsnagna/models/auth_state.dart';
+import 'package:ethioconfess/models/auth_state.dart';
 
 void main() {
   group('AuthState', () {

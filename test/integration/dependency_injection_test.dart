@@ -4,17 +4,17 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:gql_exec/gql_exec.dart' show Request, Response;
 
 // Aliased imports to disambiguate duplicate provider names
-import 'package:metsnagna/providers/service_providers.dart' as sp;
-import 'package:metsnagna/providers/auth_provider.dart' as ap;
-import 'package:metsnagna/providers/user_provider.dart' as up;
-import 'package:metsnagna/providers/botttom_navigation_provider.dart' as nav;
-import 'package:metsnagna/providers/error_provider.dart' as err;
-import 'package:metsnagna/services/storage_service.dart';
-import 'package:metsnagna/services/queue_service.dart';
-import 'package:metsnagna/services/sync_service.dart';
-import 'package:metsnagna/services/auth_service.dart';
-import 'package:metsnagna/models/auth_state.dart';
-import 'package:metsnagna/core/error/app_error.dart';
+import 'package:ethioconfess/providers/service_providers.dart' as sp;
+import 'package:ethioconfess/providers/auth_provider.dart' as ap;
+import 'package:ethioconfess/providers/user_provider.dart' as up;
+import 'package:ethioconfess/providers/botttom_navigation_provider.dart' as nav;
+import 'package:ethioconfess/providers/error_provider.dart' as err;
+import 'package:ethioconfess/services/storage_service.dart';
+import 'package:ethioconfess/services/queue_service.dart';
+import 'package:ethioconfess/services/sync_service.dart';
+import 'package:ethioconfess/services/auth_service.dart';
+import 'package:ethioconfess/models/auth_state.dart';
+import 'package:ethioconfess/core/error/app_error.dart';
 
 class FakeStorageService extends StorageService {
   @override

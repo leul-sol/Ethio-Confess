@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:metsnagna/screens/splash/screen_one.dart';
-import 'package:metsnagna/screens/splash/screen_three.dart';
-import 'package:metsnagna/screens/splash/screen_two.dart';
+import 'package:ethioconfess/screens/splash/screen_one.dart';
+import 'package:ethioconfess/screens/splash/screen_three.dart';
+import 'package:ethioconfess/screens/splash/screen_two.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:metsnagna/screens/auth/signin_screen.dart';
+import 'package:ethioconfess/screens/auth/signin_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final VoidCallback onComplete;

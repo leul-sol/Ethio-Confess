@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:metsnagna/widgets/text_widget.dart';
+import 'package:ethioconfess/widgets/text_widget.dart';
 
 AppBar buidAppBar() {
   return AppBar(

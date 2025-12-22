@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:metsnagna/providers/auth_provider.dart';
+import 'package:ethioconfess/providers/auth_provider.dart';
 import '../graphql/biography_query.dart';
 import '../graphql/graphql_client.dart';
 import '../graphql/vent_mutation.dart';

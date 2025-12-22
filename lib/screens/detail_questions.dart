@@ -1,11 +1,11 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:metsnagna/models/popular_entity.dart';
-// import 'package:metsnagna/providers/biography_providers.dart';
-// import 'package:metsnagna/services/biography_page_services.dart';
-// import 'package:metsnagna/services/storage_service.dart';
+// import 'package:ethioconfess/models/popular_entity.dart';
+// import 'package:ethioconfess/providers/biography_providers.dart';
+// import 'package:ethioconfess/services/biography_page_services.dart';
+// import 'package:ethioconfess/services/storage_service.dart';
 // import 'package:jwt_decoder/jwt_decoder.dart';
-// import 'package:metsnagna/utils/time_duration.dart';
+// import 'package:ethioconfess/utils/time_duration.dart';
 
 // class DetailQuestions extends ConsumerStatefulWidget {
 //   final PopularEntity entity;

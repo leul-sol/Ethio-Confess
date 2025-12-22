@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:metsnagna/models/category.dart';
+import 'package:ethioconfess/models/category.dart';
 
 part 'category_state.freezed.dart';
 

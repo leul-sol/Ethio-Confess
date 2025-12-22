@@ -1,9 +1,9 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:metsnagna/providers/biography_providers.dart';
-// import 'package:metsnagna/screens/add_biography_page.dart';
-// import 'package:metsnagna/services/biography_page_services.dart';
-// import 'package:metsnagna/widgets/biography_two_widget.dart';
+// import 'package:ethioconfess/providers/biography_providers.dart';
+// import 'package:ethioconfess/screens/add_biography_page.dart';
+// import 'package:ethioconfess/services/biography_page_services.dart';
+// import 'package:ethioconfess/widgets/biography_two_widget.dart';
 
 // import 'profile_screen.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:metsnagna/screens/vent/create_vent_screen.dart';
+import 'package:ethioconfess/screens/vent/create_vent_screen.dart';
 import '../../utils/auth_utils.dart';
 import '../../widgets/vent_widget/create_vent_button.dart';
 import '../../widgets/vent_widget/vent_grid.dart';

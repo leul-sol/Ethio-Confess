@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:metsnagna/providers/biography_providers.dart';
-import 'package:metsnagna/screens/profile/edit_content_screen.dart';
-// import 'package:metsnagna/services/biography_page_services.dart';
+import 'package:ethioconfess/providers/biography_providers.dart';
+import 'package:ethioconfess/screens/profile/edit_content_screen.dart';
+// import 'package:ethioconfess/services/biography_page_services.dart';
 // import '../../models/category_enum.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/storage_service.dart';
 import '../../utils/time_duration.dart';
 import '../../models/popular_entity.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:metsnagna/screens/biography/biography_detail_page.dart';
-import 'package:metsnagna/screens/vent/vent_detail_screen.dart';
+import 'package:ethioconfess/screens/biography/biography_detail_page.dart';
+import 'package:ethioconfess/screens/vent/vent_detail_screen.dart';
 
 import 'edit_profile_screen.dart';
 import 'update_password_screen.dart';

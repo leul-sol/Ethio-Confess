@@ -1,5 +1,5 @@
 // import 'package:flutter/material.dart';
-// import 'package:metsnagna/widgets/splash_widget/feature_spotlight.dart';
+// import 'package:ethioconfess/widgets/splash_widget/feature_spotlight.dart';
 
 // import '../../utils/app_preference.dart';
 

@@ -4,19 +4,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:metsnagna/widgets/auth_wrapper.dart';
+import 'package:ethioconfess/widgets/auth_wrapper.dart';
 import 'providers/service_providers.dart';
 import 'widgets/error_handler_widget.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:metsnagna/services/sync_service.dart';
-import 'package:metsnagna/services/queue_service.dart';
-import 'package:metsnagna/screens/chat/chat_detail_screen.dart';
-import 'package:metsnagna/models/conversation.dart';
-import 'package:metsnagna/services/cloudinary_service.dart';
+import 'package:ethioconfess/services/sync_service.dart';
+import 'package:ethioconfess/services/queue_service.dart';
+import 'package:ethioconfess/screens/chat/chat_detail_screen.dart';
+import 'package:ethioconfess/models/conversation.dart';
+import 'package:ethioconfess/services/cloudinary_service.dart';
 import 'dart:developer' as developer;
 // Vent detail screen for deep linking from notifications
-import 'package:metsnagna/screens/vent/vent_detail_screen.dart';
+import 'package:ethioconfess/screens/vent/vent_detail_screen.dart';
 
 // Global navigator key to allow navigation from OneSignal handlers
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();

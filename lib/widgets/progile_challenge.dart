@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:metsnagna/models/popular_entity.dart';
-import 'package:metsnagna/utils/text_preview.dart';
-import 'package:metsnagna/utils/time_duration.dart';
+import 'package:ethioconfess/models/popular_entity.dart';
+import 'package:ethioconfess/utils/text_preview.dart';
+import 'package:ethioconfess/utils/time_duration.dart';
 
 class ProfileChallenge extends StatelessWidget {
   final VentEntity entity;

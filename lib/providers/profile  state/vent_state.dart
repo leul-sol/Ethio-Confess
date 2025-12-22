@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:metsnagna/models/popular_entity.dart';
+import 'package:ethioconfess/models/popular_entity.dart';
 
 part 'vent_state.freezed.dart';
 

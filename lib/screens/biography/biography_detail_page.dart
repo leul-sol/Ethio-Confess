@@ -2,9 +2,9 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// import 'package:metsnagna/models/popular_entity.dart';
-// import 'package:metsnagna/utils/time_duration.dart';
-// import 'package:metsnagna/providers/auth_provider.dart';
+// import 'package:ethioconfess/models/popular_entity.dart';
+// import 'package:ethioconfess/utils/time_duration.dart';
+// import 'package:ethioconfess/providers/auth_provider.dart';
 
 // import '../../providers/biography_providers.dart';
 // import '../../utils/auth_utils.dart';
@@ -232,9 +232,9 @@
 // }
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:metsnagna/models/popular_entity.dart';
-import 'package:metsnagna/utils/time_duration.dart';
-import 'package:metsnagna/utils/avatar_utils.dart';
+import 'package:ethioconfess/models/popular_entity.dart';
+import 'package:ethioconfess/utils/time_duration.dart';
+import 'package:ethioconfess/utils/avatar_utils.dart';
 
 import '../../widgets/biography_widget/biography_like_button.dart';
 

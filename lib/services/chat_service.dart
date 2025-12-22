@@ -2,12 +2,12 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:developer' as developer;
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:metsnagna/services/queue_service.dart';
+import 'package:ethioconfess/services/queue_service.dart';
 import '../providers/auth_provider.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../graphql/graphql_client.dart';
 import '../graphql/chat_subscriptions.dart';
-import 'package:metsnagna/providers/service_providers.dart';
+import 'package:ethioconfess/providers/service_providers.dart';
 
 class ChatService {
   final String currentUserId;
