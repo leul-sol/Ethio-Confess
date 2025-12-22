@@ -1,0 +1,261 @@
+// import 'package:flutter/material.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:metsnagna/models/popular_entity.dart';
+// import 'package:metsnagna/providers/biography_providers.dart';
+// import 'package:metsnagna/services/biography_page_services.dart';
+// import 'package:metsnagna/services/storage_service.dart';
+// import 'package:jwt_decoder/jwt_decoder.dart';
+// import 'package:metsnagna/utils/time_duration.dart';
+
+// class DetailQuestions extends ConsumerStatefulWidget {
+//   final PopularEntity entity;
+
+//   DetailQuestions(this.entity);
+
+//   @override
+//   ConsumerState<DetailQuestions> createState() => _DetailQuestionsState();
+// }
+
+// class _DetailQuestionsState extends ConsumerState<DetailQuestions> {
+//   String? userId;
+//   final StorageService _storageService = StorageService();
+//   bool isLiked = false;
+//   int likeCount = 0;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _loadUserId();
+//     if (widget.entity.id != null) {
+//       final currentCount =
+//           ref.read(biographyLikeCountProvider(widget.entity.id!));
+//       likeCount = currentCount ?? widget.entity.likeCount;
+//     }
+//   }
+
+//   @override
+//   void didChangeDependencies() {
+//     super.didChangeDependencies();
+//     if (widget.entity.id != null) {
+//       final currentCount =
+//           ref.read(biographyLikeCountProvider(widget.entity.id!));
+//       likeCount = currentCount ?? 0;
+//     }
+//   }
+
+//   Future<void> _loadUserId() async {
+//     final token = await _storageService.getToken();
+//     if (token != null) {
+//       final decodedToken = JwtDecoder.decode(token);
+//       final hasuraClaims = decodedToken['https://hasura.io/jwt/claims'];
+//       if (hasuraClaims != null) {
+//         setState(() {
+//           userId = hasuraClaims['x-hasura-user-id'];
+//           _checkIfLiked();
+//         });
+//       }
+//     }
+//   }
+
+//   Future<void> _checkIfLiked() async {
+//     if (userId != null && widget.entity.id != null) {
+//       final params = {
+//         'biography_id': widget.entity.id!,
+//         'user_id': userId!,
+//       };
+
+//       try {
+//         // First check the global state
+//         final globalLikeState = ref.read(biographyLikesStateProvider(params));
+//         if (globalLikeState != null) {
+//           setState(() {
+//             isLiked = globalLikeState;
+//             likeCount =
+//                 ref.read(biographyLikeCountProvider(widget.entity.id!)) ??
+//                     widget.entity.likeCount;
+//           });
+//           return;
+//         }
+
+//         // If not in global state, check from API
+//         final hasLiked = await ref.read(hasUserLikedProvider(params).future);
+
+//         setState(() {
+//           isLiked = hasLiked;
+//           likeCount = widget.entity.likeCount;
+//         });
+
+//         // Update global state
+//         ref.read(biographyLikesStateProvider(params).notifier).state = hasLiked;
+//         ref.read(biographyLikeCountProvider(widget.entity.id!).notifier).state =
+//             likeCount;
+//       } catch (e) {
+//         print('Error checking like status: $e');
+//       }
+//     }
+//   }
+
+//   Future<void> _toggleLike() async {
+//     if (userId == null || widget.entity.id == null) return;
+
+//     try {
+//       final params = {
+//         'biography_id': widget.entity.id!,
+//         'user_id': userId!,
+//       };
+
+//       // Store previous state in case of error
+//       final previousIsLiked = isLiked;
+//       final previousLikeCount = likeCount;
+
+//       // Optimistically update UI
+//       setState(() {
+//         isLiked = !isLiked;
+//         likeCount = isLiked ? likeCount + 1 : likeCount - 1;
+//       });
+
+//       // Update global state immediately
+//       ref.read(biographyLikesStateProvider(params).notifier).state = isLiked;
+//       ref.read(biographyLikeCountProvider(widget.entity.id!).notifier).state =
+//           likeCount;
+
+//       // Make API call
+//       if (isLiked) {
+//         await ref.read(likeBiographyProvider(params).future);
+//       } else {
+//         await ref.read(unlikeBiographyProvider(params).future);
+//       }
+
+//       // Refresh the data
+//       ref.invalidate(biographyProvider(Category.Family));
+//       ref.invalidate(biographyProvider(Category.Relationship));
+//       ref.invalidate(biographyProvider(Category.Health));
+//       ref.invalidate(hasUserLikedProvider(params));
+//     } catch (e) {
+//       // Revert to previous state on error
+//       setState(() {
+//         isLiked = !isLiked; // Toggle back to previous state
+//         likeCount =
+//             isLiked ? likeCount + 1 : likeCount - 1; // Recalculate count
+//       });
+
+//       final params = {
+//         'biography_id': widget.entity.id!,
+//         'user_id': userId!,
+//       };
+
+//       // Revert global state
+
+//       if (context.mounted) {
+//         ScaffoldMessenger.of(context).showSnackBar(
+//           SnackBar(content: Text('Error: $e')),
+//         );
+//       }
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     if (widget.entity.id != null) {
+//       // Watch like count changes
+//       final currentLikeCount =
+//           ref.watch(biographyLikeCountProvider(widget.entity.id!));
+//       if (currentLikeCount != likeCount) {
+//         WidgetsBinding.instance.addPostFrameCallback((_) {
+//           setState(() {
+//             likeCount = currentLikeCount ?? 0;
+//           });
+//         });
+//       }
+
+//       // Watch like state changes
+//       if (userId != null) {
+//         final params = {
+//           'biography_id': widget.entity.id!,
+//           'user_id': userId!,
+//         };
+//         final currentLikeState = ref.watch(biographyLikesStateProvider(params));
+//         if (currentLikeState != isLiked) {
+//           WidgetsBinding.instance.addPostFrameCallback((_) {
+//             setState(() {
+//               isLiked = currentLikeState ?? false;
+//             });
+//           });
+//         }
+//       }
+//     }
+
+//     return WillPopScope(
+//       onWillPop: () async {
+//         if (widget.entity.id != null && userId != null) {
+//           ref.invalidate(hasUserLikedProvider({
+//             'biography_id': widget.entity.id!,
+//             'user_id': userId!,
+//           }));
+//           ref.invalidate(biographyProvider(Category.Family));
+//           ref.invalidate(biographyProvider(Category.Relationship));
+//           ref.invalidate(biographyProvider(Category.Health));
+//         }
+//         return true;
+//       },
+//       child: Scaffold(
+//         appBar: AppBar(
+//           leading: IconButton(
+//             icon: Icon(Icons.arrow_back),
+//             onPressed: () {
+//               Navigator.pop(context);
+//             },
+//           ),
+//         ),
+//         body: SingleChildScrollView(
+//           child: Padding(
+//             padding: EdgeInsets.all(40),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                   children: [
+//                     Text(
+//                       timeAgo(widget.entity.createdAt),
+//                       style: TextStyle(
+//                         fontSize: 15,
+//                         color: Colors.grey,
+//                       ),
+//                     ),
+//                     Row(
+//                       children: [
+//                         Text(
+//                           likeCount.toString(),
+//                           style: TextStyle(
+//                             fontSize: 15,
+//                             color: Colors.grey,
+//                           ),
+//                         ),
+//                         IconButton(
+//                           onPressed: _toggleLike,
+//                           icon: Icon(
+//                             isLiked ? Icons.favorite : Icons.favorite_border,
+//                             color: isLiked ? Colors.red : Colors.red[300],
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ],
+//                 ),
+//                 SizedBox(height: 10),
+//                 Text(
+//                   widget.entity.content,
+//                   textAlign: TextAlign.justify,
+//                   style: TextStyle(
+//                     fontSize: 20,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

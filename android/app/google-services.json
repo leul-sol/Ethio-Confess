@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "58032403115",
+    "project_id": "metsnagna-b9ff9",
+    "storage_bucket": "metsnagna-b9ff9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:58032403115:android:dc7a84b4a73316b12a3dee",
+        "android_client_info": {
+          "package_name": "com.devssinia.metsnagna"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZ3mD0-v8zm4lmH_5xyldUlfmIhehyiZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:58032403115:android:c840639febaf71612a3dee",
+        "android_client_info": {
+          "package_name": "com.example.metsnagna"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZ3mD0-v8zm4lmH_5xyldUlfmIhehyiZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
