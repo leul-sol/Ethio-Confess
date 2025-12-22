@@ -1,9 +1,7 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:metsnagna/firebase_options.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:metsnagna/widgets/auth_wrapper.dart';
@@ -28,15 +26,20 @@ Future<void> main() async {
 
   // Load environment variables
   await dotenv.load(fileName: ".env");
-  
+
   // Debug print environment variables
   developer.log('=== ENVIRONMENT VARIABLES DEBUG ===');
   developer.log('WebSocket URL: ${dotenv.env['WS_URL'] ?? 'Not set'}');
-  developer.log('Cloudinary Cloud Name: ${dotenv.env['CLOUDINARY_CLOUD_NAME'] ?? 'Not set'}');
-  developer.log('Cloudinary API Key: ${dotenv.env['CLOUDINARY_API_KEY'] != null ? 'Set' : 'Not set'}');
-  developer.log('Cloudinary API Secret: ${dotenv.env['CLOUDINARY_API_SECRET'] != null ? 'Set' : 'Not set'}');
-  developer.log('Cloudinary Upload Preset: ${dotenv.env['CLOUDINARY_UPLOAD_PRESET'] ?? 'Not set'}');
-  developer.log('OneSignal App ID: ${dotenv.env['ONE_SIGNAL_APP_ID'] ?? 'Not set'}');
+  developer.log(
+      'Cloudinary Cloud Name: ${dotenv.env['CLOUDINARY_CLOUD_NAME'] ?? 'Not set'}');
+  developer.log(
+      'Cloudinary API Key: ${dotenv.env['CLOUDINARY_API_KEY'] != null ? 'Set' : 'Not set'}');
+  developer.log(
+      'Cloudinary API Secret: ${dotenv.env['CLOUDINARY_API_SECRET'] != null ? 'Set' : 'Not set'}');
+  developer.log(
+      'Cloudinary Upload Preset: ${dotenv.env['CLOUDINARY_UPLOAD_PRESET'] ?? 'Not set'}');
+  developer
+      .log('OneSignal App ID: ${dotenv.env['ONE_SIGNAL_APP_ID'] ?? 'Not set'}');
   developer.log('=== ENVIRONMENT VARIABLES DEBUG END ===');
 
   // Initialize Hive
@@ -52,11 +55,6 @@ Future<void> main() async {
   // Initialize GraphQL client and services
   final container = ProviderContainer();
   final graphQLClientFuture = container.read(graphQLClientProvider);
-
-  // Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
 
   // Test Cloudinary configuration
   await CloudinaryService.testConfiguration();
@@ -88,8 +86,11 @@ Future<void> main() async {
 
       // Expected payload from server
       // e.g. { type: 'vent_created'|'vent_reply', vent_id: '<id>' }
-      final String? type = (data['type'] ?? data['notification_type'] ?? data['kind'])?.toString();
-      final String? ventId = (data['vent_id'] ?? data['ventId'] ?? data['id'])?.toString();
+      final String? type =
+          (data['type'] ?? data['notification_type'] ?? data['kind'])
+              ?.toString();
+      final String? ventId =
+          (data['vent_id'] ?? data['ventId'] ?? data['id'])?.toString();
 
       if (ventId != null && ventId.isNotEmpty) {
         // Navigate to VentDetailScreen
@@ -102,7 +103,8 @@ Future<void> main() async {
       }
 
       // If no ventId, you could route to home or a fallback if desired
-      developer.log('[OneSignal] No ventId found in notification data. type=$type data=$data');
+      developer.log(
+          '[OneSignal] No ventId found in notification data. type=$type data=$data');
     } catch (e, st) {
       developer.log('[OneSignal] Error handling notification open: $e');
       developer.log(st.toString());
@@ -142,7 +144,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Vent Ethiopia',
+      title: 'Ethio Confess',
       debugShowCheckedModeBanner: false,
       navigatorKey: rootNavigatorKey,
       theme: ThemeData(
@@ -157,7 +159,8 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/chat': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          final args = ModalRoute.of(context)!.settings.arguments
+              as Map<String, dynamic>;
           final conversation = Conversation(
             id: DateTime.now().millisecondsSinceEpoch.toString(),
             participantId: args['participantId'],
