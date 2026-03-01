@@ -8,6 +8,7 @@ import 'package:ethioconfess/providers/biography_providers.dart';
 import 'package:ethioconfess/screens/biography/add_biography_page.dart';
 // import 'package:ethioconfess/services/biography_page_services.dart';
 
+import 'package:ethioconfess/widgets/app_error_widget.dart';
 import 'components/biography_list_item.dart';
 import 'components/error_screen.dart';
 import 'components/header_delegates.dart';
@@ -174,36 +175,12 @@ class _BiographyDisplayState extends ConsumerState<BiographyDisplay> {
                         ),
                         error: (error, stack) {
                           print("Biographies error: $error");
-                          return Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(24.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.error_outline_rounded,
-                                    size: 48,
-                                    color: Color(0xFF4169E1),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    'Unable to load biographies',
-                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'Pull down to refresh the page',
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                          color: Colors.black54,
-                                        ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                            ),
+                          return AppErrorWidget(
+                            message: 'Unable to load biographies',
+                            onRetry: () async {
+                              ref.invalidate(allbiographyProvider);
+                              await ref.read(allbiographyProvider.notifier).loadBiographies();
+                            },
                           );
                         },
                       ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ethioconfess/screens/auth/new_password_screen.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/auth_provider.dart';
@@ -109,33 +108,7 @@ class OtpScreen extends ConsumerWidget {
                 const SizedBox(height: 48),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: PinCodeTextField(
-                    appContext: context,
-                    length: 4,
-                    controller: otpController,
-                    keyboardType: TextInputType.number,
-                    animationType: AnimationType.fade,
-                    pinTheme: PinTheme(
-                      shape: PinCodeFieldShape.box,
-                      borderRadius: BorderRadius.circular(8),
-                      fieldHeight: 60,
-                      fieldWidth: 60,
-                      activeFillColor: Colors.white,
-                      inactiveFillColor: Colors.white,
-                      selectedFillColor: Colors.white,
-                      activeColor: const Color(0xFF4B7FD6),
-                      inactiveColor: const Color(0xFFE8ECF4),
-                      selectedColor: const Color(0xFF4B7FD6),
-                    ),
-                    animationDuration: const Duration(milliseconds: 300),
-                    enableActiveFill: true,
-                    onCompleted: (value) {
-                      // Handle OTP completion here using Riverpod if needed
-                    },
-                    onChanged: (value) {
-                      // Handle OTP changes here if needed
-                    },
-                  ),
+                  child: _OtpTextField(controller: otpController),
                 ),
                 const SizedBox(height: 48),
                 Consumer(
@@ -199,6 +172,49 @@ class OtpScreen extends ConsumerWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Simple 4-digit OTP input (replaces pin_code_fields to avoid deprecated textTheme.button).
+class _OtpTextField extends StatelessWidget {
+  final TextEditingController controller;
+
+  const _OtpTextField({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      maxLength: 4,
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 8,
+      ),
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+      ],
+      decoration: InputDecoration(
+        counterText: '',
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Color(0xFFE8ECF4)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Color(0xFFE8ECF4)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Color(0xFF4B7FD6), width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
       ),
     );
   }

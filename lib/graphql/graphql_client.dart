@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:http/io_client.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import '../services/storage_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -37,6 +38,17 @@ Future<GraphQLClient> graphqlClient() async {
 
   developer.log('Using WebSocket URL: $wsUrl');
   developer.log('Using HTTP URL: $baseUrl');
+
+  // Debug: log Hasura role from JWT so it can be verified against Hasura permissions (role must be "user" lowercase)
+  try {
+    final token = await _storageService.getToken();
+    if (token != null && !JwtDecoder.isExpired(token)) {
+      final decoded = JwtDecoder.decode(token);
+      final claims = decoded['https://hasura.io/jwt/claims'] as Map<String, dynamic>?;
+      final role = claims?['x-hasura-default-role'] ?? claims?['x-hasura-allowed-roles']?.toString();
+      developer.log('Hasura JWT role (for permissions): $role');
+    }
+  } catch (_) {}
 
   // Create WebSocket link for subscriptions with error handling
   final WebSocketLink wsLink = WebSocketLink(

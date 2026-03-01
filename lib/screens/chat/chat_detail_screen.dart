@@ -954,6 +954,7 @@ import '../../models/chat_message.dart';
 import '../../models/conversation.dart';
 import '../../services/chat_service.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/app_error_widget.dart';
 import '../../widgets/custom_message_overlay.dart';
 // import '../../widgets/edit_message_dialog.dart';
 import '../../utils/avatar_utils.dart';
@@ -1377,36 +1378,9 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
         physics: const AlwaysScrollableScrollPhysics(),
         children: [
           SizedBox(height: MediaQuery.of(context).size.height * 0.18),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.error_outline_rounded,
-                    size: 48,
-                    color: Color(0xFF4169E1),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Unable to load chat',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Pull down to refresh the page',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.black54,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
+          AppErrorWidget(
+            message: 'Unable to load chat',
+            onRetry: _initializeChat,
           ),
         ],
       ),

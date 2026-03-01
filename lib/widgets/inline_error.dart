@@ -30,9 +30,13 @@ class InlineError extends StatelessWidget {
             ),
           ),
           if (onRetry != null)
-            TextButton(
+            TextButton.icon(
               onPressed: onRetry,
-              child: const Text('Retry'),
+              icon: const Icon(Icons.refresh_rounded, size: 18),
+              label: const Text('Try again'),
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF4169E1),
+              ),
             ),
         ],
       ),

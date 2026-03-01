@@ -23,7 +23,6 @@ dependencies:
   smooth_page_indicator: ^1.2.0+3
   flutter_secure_storage: ^9.2.4
   jwt_decoder:
-  pin_code_fields:
   json_annotation: ^4.8.1
   shimmer: ^3.0.0
   shared_preferences: ^2.5.3

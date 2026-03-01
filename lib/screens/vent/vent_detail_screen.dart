@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import '../../providers/replay_provider.dart';
 // import '../../providers/reply_provider.dart';
 import '../../providers/vent_provider.dart';
+import '../../widgets/app_error_widget.dart';
 import '../../widgets/vent_widget/vent_detail.dart';
 import '../../widgets/vent_widget/vent_replay_input.dart';
 import '../../utils/auth_utils.dart';
@@ -156,50 +157,26 @@ class _VentDetailScreenState extends ConsumerState<VentDetailScreen> {
             ),
           ),
         ),
-        error: (error, stackTrace) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
+        error: (error, stackTrace) {
+          Future<void> onRefresh() async {
+            ref.invalidate(ventDetailProvider(widget.ventId));
+          }
+          return Center(
             child: RefreshIndicator(
-              onRefresh: () async {
-                ref.invalidate(ventDetailProvider(widget.ventId));
-              },
+              onRefresh: onRefresh,
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: [
                   SizedBox(height: MediaQuery.of(context).size.height * 0.18),
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.error_outline_rounded,
-                          size: 48,
-                          color: Color(0xFF4169E1),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Unable to load vent',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Pull down to refresh the page',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Colors.black54,
-                              ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
+                  AppErrorWidget(
+                    message: 'Unable to load vent',
+                    onRetry: onRefresh,
                   ),
                 ],
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

@@ -34,7 +34,9 @@ class ErrorHandlerService {
   static AppError _handleGraphQLError(OperationException error) {
     if (error.graphqlErrors.isNotEmpty) {
       final firstError = error.graphqlErrors.first;
-      return AppError.server(firstError.message, error);
+      final rawMessage = firstError.message;
+      final friendlyMessage = _toFriendlyMessage(rawMessage);
+      return AppError.server(friendlyMessage, error);
     }
 
     if (error.linkException is HttpLinkServerException) {
@@ -53,6 +55,27 @@ class ErrorHandlerService {
     }
 
     return AppError.unknown('An unexpected error occurred', error);
+  }
+
+  /// Converts technical GraphQL/backend messages into user-friendly text.
+  static String _toFriendlyMessage(String raw) {
+    final lower = raw.toLowerCase();
+    if (lower.contains('not found in type') ||
+        lower.contains('query_root') ||
+        lower.contains('mutation_root') ||
+        lower.contains('field') && lower.contains('doesn\'t exist')) {
+      return 'Something went wrong loading this. Please try again.';
+    }
+    if (lower.contains('authorization') || lower.contains('jwt') || lower.contains('cookie')) {
+      return 'Please sign in again to continue.';
+    }
+    if (lower.contains('permission') || lower.contains('forbidden')) {
+      return 'You don\'t have access to do this.';
+    }
+    if (lower.contains('timeout') || lower.contains('timed out')) {
+      return 'Request took too long. Please try again.';
+    }
+    return raw;
   }
 
   static ErrorDisplayType getDisplayType(AppError error) {

@@ -160,6 +160,11 @@ query GetUserVents(\$userId: uuid!) {
       username
       profile_image
     }
+    ventreplies_aggregate {
+      aggregate {
+        count
+      }
+    }
   }
 }
 """;

@@ -18,6 +18,7 @@ import 'update_password_screen.dart';
 import 'settings_screen.dart';
 
 import '../../utils/avatar_utils.dart';
+import '../../widgets/app_error_widget.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   final VoidCallback? onLogout;
@@ -54,6 +55,33 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  /// Single error state when profile (or dependent data) fails — avoids showing two errors.
+  Widget _buildProfileSingleError(WidgetRef ref) {
+    Future<void> onRefresh() async {
+      ref.invalidate(userProfileProvider(userId!));
+      ref.invalidate(userVentsProvider(userId!));
+      ref.invalidate(userBiographiesProvider(userId!));
+    }
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(
+              child: AppErrorWidget(
+                message: 'Something went wrong',
+                subtitle: 'Something went wrong. Please try again.',
+                onRetry: onRefresh,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void _handleLogout(BuildContext context, WidgetRef ref) async {
@@ -342,83 +370,23 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
               ),
             ),
 
-            // Profile info
-            Consumer(
-              builder: (context, ref, child) {
-                final userProfileAsync =
-                    ref.watch(userProfileProvider(userId!));
-                print('=== PROFILE SCREEN DEBUG ===');
-                print('UserProfileAsync: $userProfileAsync');
-                if (userProfileAsync.hasValue) {
-                  final userData = userProfileAsync.value;
-                  print('Username: ${userData?['username']}');
-                  print('Email: ${userData?['email']}');
-                  print('Profile Image: ${userData?['profile_image'] ?? 'null'}');
-                }
-                print('=== PROFILE SCREEN DEBUG END ===');
-                return userProfileAsync.when(
-                    data: (userProfile) => _buildProfileContent(userProfile),
-                    // data: (userProfile) => _buildShimmerLoading(),
-                    loading: () => _buildShimmerLoading(),
-                    error: (error, stack) {
-                      // Log the error for debugging
-                      print('Error loading profile: $error');
-                      return Center(
-                        child: RefreshIndicator(
-                          onRefresh: () async {
-                            ref.invalidate(userProfileProvider(userId!));
-                          },
-                          child: ListView(
-                            // Use ListView to make it scrollable for RefreshIndicator
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            children: [
-                              Container(
-                                alignment: Alignment.center,
-                                padding: const EdgeInsets.all(24.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Icon(
-                                      Icons.error_outline_rounded,
-                                      size: 64,
-                                      color: Color(0xFF4169E1),
-                                    ),
-                                    const SizedBox(height: 24),
-                                    Text(
-                                      'Oops! Something went wrong',
-                                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    const SizedBox(height: 12),
-                                    Text(
-                                      'Pull down to refresh and try again',
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                            color: Colors.black38,
-                                          ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    // Optional: Display the error details in debug mode
-                                    // if (kDebugMode) Text(error.toString()),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-              },
-            ),
-
-            const SizedBox(height: 20),
-
-            // Tab content
+            // Single error when profile fails; otherwise profile + tabs (avoids showing two errors)
             Expanded(
-              child: TabBarView(
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final userProfileAsync =
+                      ref.watch(userProfileProvider(userId!));
+                  return userProfileAsync.when(
+                    data: (userProfile) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: _buildProfileContent(userProfile),
+                        ),
+                        const SizedBox(height: 12),
+                        Center(child: _buildProfileTabBar()),
+                        Expanded(
+                          child: TabBarView(
                 controller: _tabController,
                 children: [
                   // First tab: Vents
@@ -581,41 +549,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                           },
                           loading: () => _buildShimmerVentCard(),
                           error: (error, stack) =>
-                              // Wrap error state in a scrollable view
                               RefreshIndicator(
                                 onRefresh: _refreshVents,
-                                child: ListView(
+                                child: CustomScrollView(
                                   physics: const AlwaysScrollableScrollPhysics(),
-                                  children: [
-                                    SizedBox(height: MediaQuery.of(context).size.height * 0.18),
-                                    Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(24.0),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            const Icon(
-                                              Icons.error_outline_rounded,
-                                              size: 48,
-                                              color: Color(0xFF4169E1),
-                                            ),
-                                            const SizedBox(height: 16),
-                                            Text(
-                                              'Unable to load vents',
-                                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Text(
-                                              'Pull down to refresh the page',
-                                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                    color: Colors.black54,
-                                                  ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ],
+                                  slivers: [
+                                    SliverFillRemaining(
+                                      hasScrollBody: false,
+                                      child: Center(
+                                        child: AppErrorWidget(
+                                          message: 'Unable to load vents',
+                                          onRetry: _refreshVents,
                                         ),
                                       ),
                                     ),
@@ -850,41 +794,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                           },
                           loading: () => _buildShimmerBiographyCard(),
                           error: (error, stack) =>
-                              // Wrap error state in a scrollable view
                               RefreshIndicator(
                                 onRefresh: _refreshBiographies,
-                                child: ListView(
+                                child: CustomScrollView(
                                   physics: const AlwaysScrollableScrollPhysics(),
-                                  children: [
-                                    SizedBox(height: MediaQuery.of(context).size.height * 0.18),
-                                    Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(24.0),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            const Icon(
-                                              Icons.error_outline_rounded,
-                                              size: 48,
-                                              color: Color(0xFF4169E1),
-                                            ),
-                                            const SizedBox(height: 16),
-                                            Text(
-                                              'Unable to load biographies',
-                                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Text(
-                                              'Pull down to refresh the page',
-                                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                    color: Colors.black54,
-                                                  ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ],
+                                  slivers: [
+                                    SliverFillRemaining(
+                                      hasScrollBody: false,
+                                      child: Center(
+                                        child: AppErrorWidget(
+                                          message: 'Unable to load biographies',
+                                          onRetry: _refreshBiographies,
                                         ),
                                       ),
                                     ),
@@ -1054,41 +974,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                           },
                           loading: () => _buildShimmerVentCard(),
                           error: (error, stack) =>
-                              // Wrap error state in a scrollable view
                               RefreshIndicator(
                                 onRefresh: _refreshVents,
-                                child: ListView(
+                                child: CustomScrollView(
                                   physics: const AlwaysScrollableScrollPhysics(),
-                                  children: [
-                                    SizedBox(height: MediaQuery.of(context).size.height * 0.18),
-                                    Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(24.0),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            const Icon(
-                                              Icons.error_outline_rounded,
-                                              size: 48,
-                                              color: Color(0xFF4169E1),
-                                            ),
-                                            const SizedBox(height: 16),
-                                            Text(
-                                              'Unable to load vents',
-                                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Text(
-                                              'Pull down to refresh the page',
-                                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                    color: Colors.black54,
-                                                  ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ],
+                                  slivers: [
+                                    SliverFillRemaining(
+                                      hasScrollBody: false,
+                                      child: Center(
+                                        child: AppErrorWidget(
+                                          message: 'Unable to load vents',
+                                          onRetry: _refreshVents,
                                         ),
                                       ),
                                     ),
@@ -1104,150 +1000,161 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             ),
           ],
         ),
+                    loading: () => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(child: _buildShimmerLoading()),
+                        const SizedBox(height: 12),
+                        Center(child: _buildProfileTabBar()),
+                        Expanded(
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                      ],
+                    ),
+                    error: (error, stack) => _buildProfileSingleError(ref),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildProfileContent(Map<String, dynamic> userProfile) {
-    return Align(
-      alignment: Alignment.center,
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Color.fromARGB(255, 153, 174, 239),
-                width: 2,
+    return Center(
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Color.fromARGB(255, 153, 174, 239),
+                  width: 2,
+                ),
+              ),
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage: AvatarUtils.getProfileImage(userProfile['profile_image']),
+                backgroundColor: userProfile['profile_image'] == null || userProfile['profile_image'].toString().isEmpty
+                    ? Color(0xFF4169E1)
+                    : null,
+                child: (userProfile['profile_image'] == null || userProfile['profile_image'].toString().isEmpty)
+                    ? Icon(Icons.person, size: 50, color: Colors.white)
+                    : null,
               ),
             ),
-            child: CircleAvatar(
-              radius: 50,
-              backgroundImage: AvatarUtils.getProfileImage(userProfile['profile_image']),
-              backgroundColor: userProfile['profile_image'] == null || userProfile['profile_image'].toString().isEmpty
-                  ? Color(0xFF4169E1)
-                  : null,
-              child: (userProfile['profile_image'] == null || userProfile['profile_image'].toString().isEmpty)
-                  ? Icon(Icons.person, size: 50, color: Colors.white)
-                  : null,
+            const SizedBox(height: 16),
+            Text(
+              userProfile['username'] ?? 'Unknown User',
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-
-          Text(
-            userProfile['username'] ?? 'Unknown User',
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+            const SizedBox(height: 8),
+            Text(
+              userProfile['email'] ?? 'No email',
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            userProfile['email'] ?? 'No email',
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black87,
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          // Edit Profile Text
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  // Add your edit profile navigation here
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditProfileScreen(),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditProfileScreen(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'Edit Profile',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Color(0xFF4169E1),
+                      fontWeight: FontWeight.w500,
                     ),
-                  );
-                },
-                child: Text(
-                  'Edit Profile',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Color(0xFF4169E1),
-                    fontWeight: FontWeight.w500,
                   ),
                 ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                "|",
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              GestureDetector(
-                onTap: () {
-                  // Add your edit profile navigation here
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UpdatePasswordScreen(),
-                    ),
-                  );
-                },
-                child: Text(
-                  'Update Password',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Color(0xFF4169E1),
-                    fontWeight: FontWeight.w500,
+                const SizedBox(width: 10),
+                Text(
+                  "|",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black87,
                   ),
                 ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 24),
-
-          // Tabs
-          Container(
-            width: MediaQuery.of(context).size.width - 30,
-            height: 55, // Fixed height to match design
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade300),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            padding: const EdgeInsets.all(6), // Smaller padding
-            child: TabBar(
-              controller: _tabController,
-              indicator: BoxDecoration(
-                color: Color(0xFF4169E1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              indicatorColor: Colors.transparent,
-              dividerColor: Colors.transparent,
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.grey.shade600,
-              labelStyle: const TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-              ),
-              unselectedLabelStyle: const TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-              ),
-              padding: EdgeInsets.zero,
-              labelPadding: EdgeInsets.zero,
-              indicatorSize: TabBarIndicatorSize.tab,
-              tabs: const [
-                Tab(text: 'Vents'),
-                Tab(text: 'Biographies'),
+                const SizedBox(width: 10),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UpdatePasswordScreen(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'Update Password',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Color(0xFF4169E1),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
               ],
             ),
-          ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileTabBar() {
+    return Container(
+      width: MediaQuery.of(context).size.width - 30,
+      height: 55,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      padding: const EdgeInsets.all(6),
+      child: TabBar(
+        controller: _tabController,
+        indicator: BoxDecoration(
+          color: Color(0xFF4169E1),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        indicatorColor: Colors.transparent,
+        dividerColor: Colors.transparent,
+        labelColor: Colors.white,
+        unselectedLabelColor: Colors.grey.shade600,
+        labelStyle: const TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 14,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 14,
+        ),
+        padding: EdgeInsets.zero,
+        labelPadding: EdgeInsets.zero,
+        indicatorSize: TabBarIndicatorSize.tab,
+        tabs: const [
+          Tab(text: 'Vents'),
+          Tab(text: 'Biographies'),
         ],
       ),
     );

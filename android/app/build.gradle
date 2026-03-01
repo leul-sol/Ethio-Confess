@@ -33,7 +33,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.knowcamp.ethioconfess"
-    compileSdkVersion 35
+    compileSdk 36
     ndkVersion flutter.ndkVersion
 
     compileOptions {

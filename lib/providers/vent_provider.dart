@@ -312,10 +312,12 @@ final createVentProvider = FutureProvider.autoDispose
     }
 
     final mutationVariables = {
-      'objects': {
-        'category': data['category'],
-        'content': data['content'],
-      }
+      'objects': [
+        {
+          'category_id': data['category'],
+          'content': data['content'],
+        }
+      ],
     };
 
     final result = await client.mutate(

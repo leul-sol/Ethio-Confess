@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ethioconfess/screens/vent/create_vent_screen.dart';
 import '../../utils/auth_utils.dart';
-import '../../widgets/vent_widget/create_vent_button.dart';
+import '../../widgets/app_error_widget.dart';
 import '../../widgets/vent_widget/vent_grid.dart';
 import '../../providers/vent_provider.dart';
 import '../../providers/category_provider.dart';
@@ -102,7 +102,6 @@ class _VentListScreenState extends ConsumerState<VentListScreen> with SingleTick
   @override
   Widget build(BuildContext context) {
     final categoryState = ref.watch(categoryProvider);
-    final ventState = ref.watch(ventProvider(_currentCategoryId));
 
     if (categoryState.isLoading) {
       return const Scaffold(
@@ -114,17 +113,20 @@ class _VentListScreenState extends ConsumerState<VentListScreen> with SingleTick
 
     if (categoryState.error != null) {
       return Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Error: ${categoryState.error}'),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _handleRefresh,
-                child: const Text('Retry'),
-              ),
-            ],
+        body: SafeArea(
+          child: RefreshIndicator(
+            onRefresh: _handleRefresh,
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height * 0.25),
+                AppErrorWidget(
+                  message: 'Couldn\'t load categories',
+                  subtitle: 'Something went wrong. Please try again.',
+                  onRetry: _handleRefresh,
+                ),
+              ],
+            ),
           ),
         ),
       );

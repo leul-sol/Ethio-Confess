@@ -33,14 +33,25 @@ class ErrorPage extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               error.message,
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Colors.black87,
+                  ),
               textAlign: TextAlign.center,
             ),
             if (onRetry != null) ...[
-              const SizedBox(height: 24),
-              ElevatedButton(
+              const SizedBox(height: 28),
+              FilledButton.icon(
                 onPressed: onRetry,
-                child: Text(retryText ?? 'Try Again'),
+                icon: const Icon(Icons.refresh_rounded, size: 20),
+                label: Text(retryText ?? 'Try again'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFF4169E1),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
               ),
             ],
           ],

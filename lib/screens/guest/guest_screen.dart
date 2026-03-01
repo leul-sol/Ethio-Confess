@@ -10,6 +10,7 @@ import '../../providers/vent_provider.dart';
 import '../../models/vent.dart';
 import '../biography/biography_detail_page.dart';
 import '../../utils/avatar_utils.dart';
+import '../../widgets/app_error_widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 class GuestScreen extends ConsumerStatefulWidget {
@@ -412,34 +413,10 @@ class _GuestScreenState extends ConsumerState<GuestScreen> {
         children: [
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.8,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "assets/images/no-results.png",
-                    height: 100,
-                    width: 100,
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    _errorMessage ?? 'Something went wrong',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black54,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Pull down to refresh',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.black38,
-                    ),
-                  ),
-                ],
-              ),
+            child: AppErrorWidget(
+              message: _errorMessage ?? 'Something went wrong',
+              subtitle: 'Something went wrong. Please try again.',
+              onRetry: _refreshAllData,
             ),
           ),
         ],
