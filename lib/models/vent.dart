@@ -44,12 +44,28 @@ class Vent {
     return ventRepliesAggregate?['aggregate']?['count'] ?? 0;
   }
 
-  // Custom date parser
+  // Custom date parser: treat API timestamps as UTC when no timezone is given (Hasura/Postgres often return UTC without "Z")
   static DateTime? _dateFromJson(String? date) {
     if (date == null) return null;
     try {
       final parsed = DateTime.tryParse(date);
       if (parsed != null) {
+        // If string has no timezone (no Z, no +00:00), assume UTC so "just posted" doesn't show as "2h ago"
+        final hasTimezone = date.endsWith('Z') ||
+            date.contains('+') ||
+            RegExp(r'-\d{2}:?\d{2}$').hasMatch(date);
+        if (!hasTimezone) {
+          final utc = DateTime.utc(
+            parsed.year,
+            parsed.month,
+            parsed.day,
+            parsed.hour,
+            parsed.minute,
+            parsed.second,
+            parsed.millisecond,
+          );
+          return utc.toLocal();
+        }
         return parsed.toLocal();
       }
       // Attempt to sanitize minimal timestamps like 'YYYY-MM-DDTH' or 'YYYY-MM-DDTHH'

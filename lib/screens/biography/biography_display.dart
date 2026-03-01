@@ -78,6 +78,9 @@ class _BiographyDisplayState extends ConsumerState<BiographyDisplay> {
       print('🚨🚨🚨 [BiographyDisplay] allBiographies has data: ${allBiographies.value?.length ?? 0} items 🚨🚨🚨');
     }
 
+    final bool showSingleEmptyState = allBiographies.hasValue &&
+        (allBiographies.value ?? []).isEmpty;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: _errorMessage != null
@@ -104,88 +107,87 @@ class _BiographyDisplayState extends ConsumerState<BiographyDisplay> {
                       ),
                     ),
                   ),
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: TopBiographyHeaderDelegate(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 24),
-                          topBiographies.when(
-                            data: (biographies) {
-                              if (biographies.isEmpty) {
-                                return const Center(
-                                  child: Text('No top biographies available'),
+                  if (showSingleEmptyState) ...[
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: _buildBiographiesEmptyState(context),
+                    ),
+                  ] else ...[
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: TopBiographyHeaderDelegate(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 24),
+                            topBiographies.when(
+                              data: (biographies) {
+                                if (biographies.isEmpty) {
+                                  return const SizedBox(height: 24);
+                                }
+                                return Container(
+                                  height: 170,
+                                  color: Colors.white,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: biographies.length,
+                                    itemBuilder: (context, index) {
+                                      final bio = biographies[index];
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10.0,
+                                        ),
+                                        child: TopBiographyCard(bio: bio),
+                                      );
+                                    },
+                                  ),
                                 );
-                              }
-                              return Container(
-                                height: 170,
-                                color: Colors.white,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: biographies.length,
-                                  itemBuilder: (context, index) {
-                                    final bio = biographies[index];
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10.0,
-                                      ),
-                                      child: TopBiographyCard(bio: bio),
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                            loading: () => BiographyShimmerEffects.buildTopShimmer(),
-                            error: (error, stack) {
-                              print("Top biographies error: $error");
-                              return BiographyShimmerEffects.buildTopShimmer();
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                      child: allBiographies.when(
-                        data: (biographies) {
-                          if (biographies.isEmpty) {
-                            return const Center(
-                              child: Text('No biographies available'),
-                            );
-                          }
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            padding: EdgeInsets.zero,
-                            itemCount: biographies.length,
-                            itemBuilder: (context, index) {
-                              return BiographyListItem(
-                                bio: biographies[index],
-                              );
-                            },
-                          );
-                        },
-                        loading: () => SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.6,
-                          child: BiographyShimmerEffects.buildListShimmer(),
+                              },
+                              loading: () => BiographyShimmerEffects.buildTopShimmer(),
+                              error: (error, stack) {
+                                print("Top biographies error: $error");
+                                return BiographyShimmerEffects.buildTopShimmer();
+                              },
+                            ),
+                          ],
                         ),
-                        error: (error, stack) {
-                          print("Biographies error: $error");
-                          return AppErrorWidget(
-                            message: 'Unable to load biographies',
-                            onRetry: () async {
-                              ref.invalidate(allbiographyProvider);
-                              await ref.read(allbiographyProvider.notifier).loadBiographies();
-                            },
-                          );
-                        },
                       ),
                     ),
-                  ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        child: allBiographies.when(
+                          data: (biographies) {
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              padding: EdgeInsets.zero,
+                              itemCount: biographies.length,
+                              itemBuilder: (context, index) {
+                                return BiographyListItem(
+                                  bio: biographies[index],
+                                );
+                              },
+                            );
+                          },
+                          loading: () => SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.6,
+                            child: BiographyShimmerEffects.buildListShimmer(),
+                          ),
+                          error: (error, stack) {
+                            print("Biographies error: $error");
+                            return AppErrorWidget(
+                              message: 'Unable to load biographies',
+                              onRetry: () async {
+                                ref.invalidate(allbiographyProvider);
+                                await ref.read(allbiographyProvider.notifier).loadBiographies();
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -209,6 +211,43 @@ class _BiographyDisplayState extends ConsumerState<BiographyDisplay> {
           Icons.add,
           color: Colors.white,
           size: 25,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBiographiesEmptyState(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 40),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.book_outlined,
+              size: 64,
+              color: Colors.grey[400],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'No biographies yet',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[700],
+                    letterSpacing: -0.5,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Share your life stories and inspire others. Tap the + button to post your first biography.',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.grey[600],
+                    height: 1.45,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

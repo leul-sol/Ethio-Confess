@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -328,6 +329,11 @@ final createVentProvider = FutureProvider.autoDispose
     );
 
     if (result.hasException) {
+      developer.log('Create vent failed', error: result.exception);
+      final ex = result.exception;
+      if (ex is OperationException && ex.graphqlErrors.isNotEmpty) {
+        developer.log('Create vent GraphQL errors: ${ex.graphqlErrors.map((e) => e.message).join('; ')}');
+      }
       throw ErrorHandlerService.handleError(result.exception!);
     }
   } catch (e, stackTrace) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../core/error/error_handler_service.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/biography_providers.dart';
 import '../../providers/category_provider.dart';
@@ -226,9 +227,11 @@ class CreateVentScreenState extends ConsumerState<CreateVentScreen> {
                       }
                     } catch (error) {
                       if (mounted) {
+                        final appError = ErrorHandlerService.handleError(error);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Failed to post vent. Try again.'),
+                          SnackBar(
+                            content: Text(appError.message),
+                            duration: const Duration(seconds: 4),
                           ),
                         );
                       }

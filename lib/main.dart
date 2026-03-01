@@ -24,6 +24,9 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Avoid crash when offline: don't fetch fonts from network; use fallback if needed
+  GoogleFonts.config.allowRuntimeFetching = false;
+
   // Load environment variables
   await dotenv.load(fileName: ".env");
 
@@ -151,7 +154,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color.fromRGBO(65, 105, 225, 1),
         ),
-        textTheme: GoogleFonts.poppinsTextTheme(),
+        textTheme: GoogleFonts.poppinsTextTheme(
+          ThemeData.light().textTheme,
+        ),
         scaffoldBackgroundColor: Colors.white,
       ),
       home: ErrorHandlerWidget(
