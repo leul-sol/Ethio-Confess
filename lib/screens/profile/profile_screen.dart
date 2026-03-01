@@ -442,7 +442,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                               );
                             }
                             return ListView.builder(
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
                               itemCount: vents.length,
                               itemBuilder: (context, index) {
                                 final vent = vents[index];
@@ -624,10 +624,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                             }
                             return CustomScrollView(
                               slivers: [
-                                SliverList(
-                                  delegate: SliverChildBuilderDelegate(
-                                    (context, index) {
-                                      final biography = biographies[index];
+                                SliverPadding(
+                                  padding: const EdgeInsets.only(top: 12),
+                                  sliver: SliverList(
+                                    delegate: SliverChildBuilderDelegate(
+                                      (context, index) {
+                                        final biography = biographies[index];
                                       return GestureDetector(
                                         onTap: () {
                                           Navigator.push(
@@ -690,7 +692,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Text(
-                                                        timeAgo(DateTime.parse(
+                                                        timeAgo(parseApiDateTime(
                                                             biography['created_at'])),
                                                         style: TextStyle(
                                                           color: Colors.grey.shade600,
@@ -786,7 +788,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                                         ),
                                       );
                                     },
-                                    childCount: biographies.length,
+                                      childCount: biographies.length,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -805,186 +808,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                                         child: AppErrorWidget(
                                           message: 'Unable to load biographies',
                                           onRetry: _refreshBiographies,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                        ),
-                      );
-                    },
-                  ),
-                  Consumer(
-                    builder: (context, ref, child) {
-                      final ventsAsync = ref.watch(userVentsProvider(userId!));
-                      print('Vent Provider State: ${ventsAsync.runtimeType}');
-                      return RefreshIndicator(
-                        onRefresh: () async {
-                          await _refreshVents(); // Call the refresh function
-                        },
-                        child: ventsAsync.when(
-                          data: (vents) {
-                            print('Vents loaded: ${vents.length} items');
-                            if (vents.isEmpty) {
-                              // Wrap empty state in a scrollable view
-                              return CustomScrollView(
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                slivers: [
-                                  SliverFillRemaining(
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.chat_bubble_outline_rounded,
-                                            size: 64,
-                                            color: Colors.grey[400],
-                                          ),
-                                          const SizedBox(height: 16),
-                                          Text(
-                                            'No Vents Yet',
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.grey[700],
-                                            ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          Text(
-                                            'Share your thoughts and experiences\nwith the community',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.grey[600],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }
-                            return ListView.builder(
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
-                              itemCount: vents.length,
-                              itemBuilder: (context, index) {
-                                final vent = vents[index];
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => VentDetailScreen(
-                                          ventId: vent.id.toString(),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    margin: const EdgeInsets.only(bottom: 24.0),
-                                    padding: const EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(8),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
-                                          blurRadius: 12,
-                                          spreadRadius: 1,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.format_quote_rounded,
-                                          size: 32,
-                                          color: Colors.black26,
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Text(
-                                          vent.content ?? '',
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            height: 1.5,
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 16),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              timeAgo(vent.createdAt ?? DateTime.now()),
-                                              style: TextStyle(
-                                                color: Colors.grey.shade600,
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                            Row(
-                                              children: [
-                                                _buildActionButton(
-                                                  icon: Icons.edit_outlined,
-                                                  onPressed: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) => EditContentScreen(
-                                                          initialContent: vent.content ?? '',
-                                                          onUpdate: (newContent) async {
-                                                            await ref.read(updateVentProvider({
-                                                              'id': vent.id,
-                                                              'content': newContent,
-                                                            }).future);
-                                                            ref.invalidate(userVentsProvider(userId!));
-                                                          },
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                  color: Color(0xFF4169E1),
-                                                  tooltip: 'Edit',
-                                                ),
-                                                _buildActionButton(
-                                                  icon: Icons.delete,
-                                                  onPressed: () =>
-                                                      _showDeleteConfirmation(() async {
-                                                    await ref.read(userVentsProvider(userId!).notifier).deleteVent(vent.id!);
-                                                  }),
-                                                  color: Colors.red,
-                                                  tooltip: 'Delete',
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          loading: () => _buildShimmerVentCard(),
-                          error: (error, stack) =>
-                              RefreshIndicator(
-                                onRefresh: _refreshVents,
-                                child: CustomScrollView(
-                                  physics: const AlwaysScrollableScrollPhysics(),
-                                  slivers: [
-                                    SliverFillRemaining(
-                                      hasScrollBody: false,
-                                      child: Center(
-                                        child: AppErrorWidget(
-                                          message: 'Unable to load vents',
-                                          onRetry: _refreshVents,
                                         ),
                                       ),
                                     ),

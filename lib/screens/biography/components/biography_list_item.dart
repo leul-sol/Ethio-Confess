@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:ethioconfess/models/biography_entity.dart';
 import 'package:ethioconfess/models/popular_entity.dart';
-// import 'package:ethioconfess/providers/biography_providers.dart';
 import 'package:ethioconfess/screens/biography/biography_detail_page.dart';
-import 'package:ethioconfess/widgets/biography_widget/biography_like_button.dart';
 import 'package:ethioconfess/utils/avatar_utils.dart';
-// import 'package:shimmer/shimmer.dart';
+import 'package:ethioconfess/utils/time_duration.dart';
+import 'package:ethioconfess/widgets/biography_widget/biography_like_button.dart';
 
 class BiographyListItem extends ConsumerWidget {
   final PopularEntity bio;
@@ -16,41 +14,9 @@ class BiographyListItem extends ConsumerWidget {
     required this.bio,
   }) : super(key: key);
 
-  String _getTimeAgo(String? dateTimeStr) {
-    if (dateTimeStr == null) return '';
-    try {
-      // Parse the UTC timestamp with timezone offset
-      final dateTime = DateTime.parse(dateTimeStr).toUtc();
-      final now = DateTime.now().toUtc();
-      
-      final difference = now.difference(dateTime);
-
-      // Convert duration to appropriate format
-      if (difference.inDays >= 28) {
-        final months = (difference.inDays / 30).floor();
-        return months == 1 ? '1 month ago' : '$months months ago';
-      } else if (difference.inDays >= 7) {
-        final weeks = (difference.inDays / 7).floor();
-        return weeks == 1 ? '1 week ago' : '$weeks weeks ago';
-      } else if (difference.inDays > 0) {
-        return difference.inDays == 1 ? 'yesterday' : '${difference.inDays}d ago';
-      } else if (difference.inHours > 0) {
-        return '${difference.inHours}h ago';
-      } else if (difference.inMinutes > 0) {
-        return '${difference.inMinutes}m ago';
-      } else {
-        return 'just now';
-      }
-    } catch (e) {
-      print('Error parsing date: $e');
-      return '';
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print('🚨🚨🚨 [BiographyListItem] BUILD METHOD CALLED! 🚨🚨🚨');
-    String timeAgo = _getTimeAgo(bio.createdAt);
+    String timeAgoStr = timeAgo(parseApiDateTime(bio.createdAt));
     print("🎨 [BiographyListItem] Building list item for bio: ${bio.username}");
     print("🎨 [BiographyListItem] Profile image: ${bio.profileImage}");
     print("🎨 [BiographyListItem] Full bio object: $bio");
@@ -120,7 +86,7 @@ class BiographyListItem extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  timeAgo,
+                  timeAgoStr,
                   style: TextStyle(
                     color: Colors.grey.shade600,
                     fontSize: 14,

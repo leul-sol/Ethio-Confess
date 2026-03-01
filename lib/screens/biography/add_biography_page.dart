@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ethioconfess/providers/auth_provider.dart';
 import 'package:ethioconfess/providers/biography_providers.dart';
-// import 'package:ethioconfess/services/biography_page_services.dart';
-import 'package:ethioconfess/models/popular_entity.dart';
-import 'package:ethioconfess/providers/user_provider.dart';
-
-import '../../providers/auth_provider.dart';
 
 class PostScreen extends ConsumerStatefulWidget {
   @override
@@ -153,13 +149,13 @@ class _PostScreenState extends ConsumerState<PostScreen> {
 
   Future<void> handlePost() async {
     if (_characterCount < _minCharacters) {
-      setState(() {
+      if (mounted) setState(() {
         _hasAttemptedToPostTooShortContent = true;
       });
       return;
     }
 
-    setState(() {
+    if (mounted) setState(() {
       _isLoading = true;
     });
 
@@ -171,20 +167,8 @@ class _PostScreenState extends ConsumerState<PostScreen> {
     try {
       final success = await ref.read(addBiographyProvider(params).future);
 
+      if (!mounted) return;
       if (success) {
-        // Optimistically add the new biography to the list
-        final userState = ref.read(userProvider);
-        final username = userState.user?.username ?? 'Unknown';
-        final newBio = PopularEntity(
-          id: null,
-          category: null,
-          createdAt: DateTime.now().toIso8601String(),
-          content: content,
-          username: username,
-          likeCount: 0,
-        );
-        ref.read(allbiographyProvider.notifier).addBiographyOptimistically(newBio);
-
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("Biography added successfully"),
@@ -193,17 +177,17 @@ class _PostScreenState extends ConsumerState<PostScreen> {
         );
         final userId = ref.read(userIdProvider);
         ref.invalidate(userBiographiesProvider(userId!));
-        ref.invalidate(allbiographyProvider);
-        await Future.delayed(const Duration(milliseconds: 300));
+        // Refetch list so new biography appears at top when we go back
+        await ref.read(allbiographyProvider.notifier).loadBiographies();
+        if (!mounted) return;
         Navigator.pop(context, true);
       } else {
-        // If the operation returned false, verify if it was actually created
-        final content = params['content'] as String;
         final wasActuallyCreated = await ref.read(verifyBiographyCreationProvider(content).future);
         final userId = ref.read(userIdProvider);
         ref.invalidate(userBiographiesProvider(userId!));
         ref.invalidate(allbiographyProvider);
         await Future.delayed(const Duration(milliseconds: 300));
+        if (!mounted) return;
         if (wasActuallyCreated) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -219,16 +203,15 @@ class _PostScreenState extends ConsumerState<PostScreen> {
               backgroundColor: Colors.red,
             ),
           );
-          Navigator.pop(context);
         }
       }
     } catch (e) {
-      // On error, verify if the biography was actually created
       final wasActuallyCreated = await ref.read(verifyBiographyCreationProvider(content).future);
       final userId = ref.read(userIdProvider);
       ref.invalidate(userBiographiesProvider(userId!));
       ref.invalidate(allbiographyProvider);
       await Future.delayed(const Duration(milliseconds: 300));
+      if (!mounted) return;
       if (wasActuallyCreated) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -245,14 +228,16 @@ class _PostScreenState extends ConsumerState<PostScreen> {
             duration: const Duration(seconds: 4),
             action: SnackBarAction(
               label: 'Retry',
-              onPressed: () => handlePost(),
+              onPressed: () {
+                if (mounted) handlePost();
+              },
             ),
           ),
         );
-        Navigator.pop(context);
+        // Do not pop here so user can tap Retry or go back manually
       }
     } finally {
-      setState(() {
+      if (mounted) setState(() {
         _isLoading = false;
       });
     }

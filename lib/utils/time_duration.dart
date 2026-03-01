@@ -27,6 +27,28 @@
 // }
 import 'package:timeago/timeago.dart' as timeago;
 
+/// Parses an API timestamp string (often UTC without "Z") to local DateTime.
+DateTime? parseApiDateTime(String? dateTimeStr) {
+  if (dateTimeStr == null) return null;
+  final parsed = DateTime.tryParse(dateTimeStr);
+  if (parsed == null) return null;
+  final hasTimezone = dateTimeStr.endsWith('Z') ||
+      dateTimeStr.contains('+') ||
+      RegExp(r'-\d{2}:?\d{2}$').hasMatch(dateTimeStr);
+  if (!hasTimezone) {
+    return DateTime.utc(
+      parsed.year,
+      parsed.month,
+      parsed.day,
+      parsed.hour,
+      parsed.minute,
+      parsed.second,
+      parsed.millisecond,
+    ).toLocal();
+  }
+  return parsed.toLocal();
+}
+
 String timeAgo(DateTime? dateTime) {
   // print("Biography Created date $dateTime");
   if (dateTime == null) return '';

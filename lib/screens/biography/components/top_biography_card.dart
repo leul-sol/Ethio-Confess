@@ -83,7 +83,7 @@ class TopBiographyCard extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    timeAgo(DateTime.parse(bio.createdAt)),
+                    timeAgo(parseApiDateTime(bio.createdAt)),
                     style: const TextStyle(
                       fontSize: 12,
                       color: Colors.grey,

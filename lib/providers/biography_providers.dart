@@ -632,31 +632,10 @@ final updateBiographyProvider =
 
     final result = await client.mutate(
       MutationOptions(
-        document: gql("""
-          mutation UpdateBiography(
-            \$id: uuid!,
-            \$content: String!,
-            \$category: category!
-          ) {
-            update_biography_by_pk(
-              pk_columns: {id: \$id},
-              _set: {
-                content: \$content,
-                category: \$category,
-                updated_at: "now()"
-              }
-            ) {
-              id
-              content
-              category
-              updated_at
-            }
-          }
-        """),
+        document: gql(updateBiographyMutation),
         variables: {
           'id': params['id'],
           'content': params['content'],
-          'category': params['category'],
         },
       ),
     );

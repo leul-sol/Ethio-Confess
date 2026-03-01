@@ -123,7 +123,30 @@ class _BiographyDisplayState extends ConsumerState<BiographyDisplay> {
                             topBiographies.when(
                               data: (biographies) {
                                 if (biographies.isEmpty) {
-                                  return const SizedBox(height: 24);
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.auto_awesome, size: 20, color: Colors.grey[400]),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          'Top picks',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.grey[700],
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            'Liked biographies will appear here',
+                                            style: TextStyle(fontSize: 13, color: Colors.grey[500]),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
                                 }
                                 return Container(
                                   height: 170,

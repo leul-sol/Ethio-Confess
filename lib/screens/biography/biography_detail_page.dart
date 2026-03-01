@@ -302,7 +302,7 @@ class BiographyDetailPage extends ConsumerWidget {
                                   ),
                                 ),
                                 Text(
-                                  timeAgo(DateTime.tryParse(entity.createdAt)),
+                                  timeAgo(parseApiDateTime(entity.createdAt)),
                                   style: const TextStyle(
                                     fontSize: 14,
                                     color: Colors.grey,
